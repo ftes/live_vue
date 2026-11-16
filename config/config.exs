@@ -24,3 +24,12 @@ config :live_vue,
   # if false, we will always update full props and not send diffs
   # defaults to true as it greatly reduces payload size
   enable_props_diff: true
+
+if config_env() == :e2e do
+  config :playwright, :expect, timeout: 1000
+  # The ExUnit port of the Playwright suite (test/e2e_pw), mirroring test/e2e/playwright.config.js.
+  config :playwright, :test,
+    context_options: [base_url: "http://localhost:4004/"],
+    trace: :retain_on_failure,
+    screenshot: :only_on_failure
+end

@@ -20,16 +20,17 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: "1.15"
-          otp-version: "26"
+          # playwright_ex needs Elixir ~> 1.18
+          elixir-version: "1.19"
+          otp-version: "28"
 
       - name: Restore Elixir dependency cache
         uses: actions/cache@v6
         id: deps-cache
         with:
           path: deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
+          key: ${{ runner.os }}-mix-e2e-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-e2e-
 
       - name: Install Elixir dependencies
         if: steps.deps-cache.outputs.cache-hit != 'true'
@@ -44,8 +45,26 @@ jobs:
       - name: Install npm dependencies (root)
         run: npm install
 
-      - name: Install E2E dependencies and browsers
-        run: npm run e2e:install
+      # mix.lock pins the playwright_ex driver and so the browser revisions
+      - name: Restore Playwright driver and browser cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cache/playwright
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/mix.lock') }}
 
+      - name: Install E2E dependencies and browsers
+        run: mix playwright.install -- chromium --with-deps
+
+      # The ExUnit port in test/e2e_pw; `mix test --failed` is Playwright Test's retry
       - name: Run E2E tests
-        run: npm run e2e:test
+        run: |
+          npm run e2e:build
+          mix test --only e2e || { [ $? -eq 2 ] && mix test --only e2e --failed; }
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: test-results
+          path: test-results

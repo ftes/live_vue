@@ -91,8 +91,8 @@ defmodule LiveVue.MixProject do
         }
       ],
       test_coverage: [tool: ExCoveralls],
-      test_paths: ["test"],
-      test_ignore_filters: [~r"/e2e/"]
+      test_paths: test_paths(Mix.env()),
+      test_ignore_filters: [~r"/e2e/", ~r"/e2e_pw/support/"]
     ]
   end
 
@@ -136,6 +136,9 @@ defmodule LiveVue.MixProject do
     ]
   end
 
+  defp test_paths(:e2e), do: ["test/e2e_pw"]
+  defp test_paths(_), do: ["test"]
+
   defp elixirc_paths(:e2e), do: ["lib", "test/e2e/features"]
   defp elixirc_paths(_), do: ["lib"]
 
@@ -168,7 +171,8 @@ defmodule LiveVue.MixProject do
 
       # e2e dependencies
       {:bandit, "~> 1.5", only: :e2e},
-      {:phoenix_live_reload, "~> 1.2", only: :e2e}
+      {:phoenix_live_reload, "~> 1.2", only: :e2e},
+      {:playwright, "~> 1.65.0-rc.1", hex: :playwright_ex, only: :e2e}
     ]
   end
 
