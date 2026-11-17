@@ -10,9 +10,13 @@ defmodule LiveVue.E2E.Case do
   alias Playwright.BrowserContext
   alias Playwright.Test.BrowserPool
 
+  @doc "The \"Desktop Chrome\" device, `test.use` of the project: for each context of a test."
+  def device(%{browser: browser}), do: Playwright.devices(BrowserPool.playwright(browser))["Desktop Chrome"]
+
   using opts do
     quote do
       use Playwright.Test, unquote(opts)
+      use Playwright.Test, context_options: &LiveVue.E2E.Case.device/1
 
       import LiveVue.E2E.Utils
 
@@ -27,13 +31,11 @@ defmodule LiveVue.E2E.Case do
   end
 
   setup_all do
-    browser = BrowserPool.browser()
-    device = Map.fetch!(Playwright.devices(BrowserPool.playwright(browser)), "Desktop Chrome")
-    %{browser: browser, device: device}
+    %{browser: BrowserPool.browser()}
   end
 
-  setup %{browser: browser, device: device} do
-    context = Browser.new_context!(browser, device)
+  setup %{browser: browser} do
+    context = Browser.new_context!(browser)
     %{context: context, page: BrowserContext.new_page!(context)}
   end
 end

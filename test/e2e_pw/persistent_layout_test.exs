@@ -5,9 +5,8 @@ defmodule LiveVue.E2E.PersistentLayoutTest do
     Expect.to_have_text!(Page.locator(page, "[data-pw-page]"), text, timeout: 5000)
   end
 
-  test "SSR renders the injected layout tree before hydration", %{browser: browser, device: device} do
-    # Playwright Test applies the project's `use` (the device) to browser.newContext() too.
-    context = Browser.new_context!(browser, Map.put(device, :java_script_enabled, false))
+  test "SSR renders the injected layout tree before hydration", %{browser: browser} do
+    context = Browser.new_context!(browser, java_script_enabled: false)
     page = BrowserContext.new_page!(context)
 
     Page.goto!(page, "/persistent-layout/page1")

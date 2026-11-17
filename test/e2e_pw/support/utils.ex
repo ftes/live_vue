@@ -21,7 +21,7 @@ defmodule LiveVue.E2E.Utils do
     ]
 
     Process.sleep(50)
-    Enum.each(promises, &Promise.await!/1)
+    promises |> Promise.all() |> Promise.await!()
   end
 
   # Execute code inside LiveView process
