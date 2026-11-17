@@ -55,7 +55,7 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/mix.lock') }}
 
       - name: Install E2E dependencies and browsers
-        run: mix playwright.install -- chromium --with-deps
+        run: mix playwright.install chromium --with-deps
 
       # The ExUnit port in test/e2e_pw; `mix test --failed` is Playwright Test's retry
       - name: Run E2E tests
