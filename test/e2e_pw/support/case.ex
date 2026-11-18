@@ -1,7 +1,7 @@
 defmodule LiveVue.E2E.Case do
   @moduledoc """
   The `chromium` project of test/e2e/playwright.config.js: a pooled browser and, per test, a
-  context of the "Desktop Chrome" device (the module's `use`, as the suite has one project).
+  context of the "Desktop Chrome" device (set in config/runtime.exs, as the suite has one project).
   """
   use ExUnit.CaseTemplate
   use Playwright.Test
@@ -12,7 +12,6 @@ defmodule LiveVue.E2E.Case do
 
   using opts do
     quote do
-      use Playwright.Test, Playwright.device("Desktop Chrome")
       use Playwright.Test, unquote(opts)
 
       import LiveVue.E2E.Utils
