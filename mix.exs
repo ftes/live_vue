@@ -172,7 +172,7 @@ defmodule LiveVue.MixProject do
       # e2e dependencies
       {:bandit, "~> 1.5", only: :e2e},
       {:phoenix_live_reload, "~> 1.2", only: :e2e},
-      {:playwright, github: "ftes/playwright_ex", ref: "3e9b47591e9fb72ea2fc1648f485af034c6c111b", only: :e2e}
+      {:playwright, "~> 1.65.0-rc.2", hex: :playwright_ex, only: :e2e}
     ]
   end
 
