@@ -13,7 +13,7 @@ If you don't need SSR, you can easily disable it with one line of configuration.
 ## Prerequisites
 
 - Node.js installed (version 24 or later recommended)
-- Elixir 1.13+
+- Elixir 1.18+
 - **Phoenix 1.8+** (required for Igniter installer)
 - [Igniter](https://hexdocs.pm/igniter/) installed (see below)
 

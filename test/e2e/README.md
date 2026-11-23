@@ -14,10 +14,10 @@ This directory contains end-to-end tests for the LiveVue library using
 
 ```bash
 mix e2e.test                                                  # Build the assets, run all tests
-MIX_ENV=e2e mix test test/e2e/features/form/form.spec.exs     # Run one file (after npm run e2e:build)
+MIX_ENV=e2e mix test test/e2e/features/form/form_test.exs     # Run one file (after npm run e2e:build)
 ```
 
-To watch the browser, set `launch_options: [headless: false]` in the `:playwright, :test` config of
+To watch the browser, set `headless: false` in the `:playwright, :test` config of
 `config/config.exs`. To debug interactively, run with `PWDEBUG=1`.
 
 ## Structure
@@ -30,7 +30,7 @@ test/e2e/
 │   ├── basic/              # Basic counter test
 │   │   ├── live.ex         # LiveView module (LiveVue.E2E.TestLive)
 │   │   ├── counter.vue     # Vue component
-│   │   └── basic.spec.exs  # Playwright test
+│   │   └── basic_test.exs  # Playwright test
 │   ├── form/               # Form validation tests
 │   ├── stream/             # LiveView streams tests
 │   ├── event/              # useLiveEvent tests
@@ -41,14 +41,11 @@ test/e2e/
 │   └── upload/             # File upload tests
 ├── js/
 │   └── app.js              # Vue/LiveSocket bootstrap
-├── support/                # LiveVue.E2E.Case and the test utilities
-├── server.exs              # Phoenix endpoint, routes, layout
-├── run_server.exs          # Runs the server standalone (npm run e2e:server)
-├── test_helper.exs         # Starts the server for the tests
+├── test_helper.exs         # Phoenix endpoint, routes, layout (and the tests' ExUnit helper)
+├── utils.ex                # Test utilities
+├── case.ex                 # LiveVue.E2E.Case, the case template of the tests
 └── vite.config.js
 ```
-
-The tests are named `*.spec.exs`, not `*_test.exs`, so that the unit run (`mix test`) doesn't load them.
 
 ## Adding a New Test Feature
 
@@ -81,12 +78,12 @@ The tests are named `*.spec.exs`, not `*_test.exs`, so that the unit run (`mix t
    </template>
    ```
 
-4. Add route to `server.exs`:
+4. Add route to `test_helper.exs`:
    ```elixir
    live "/my-feature", MyFeatureLive
    ```
 
-5. Add test (`my-feature.spec.exs`):
+5. Add test (`my_feature_test.exs`):
    ```elixir
    defmodule LiveVue.E2E.MyFeatureTest do
      use LiveVue.E2E.Case, async: true
@@ -106,7 +103,7 @@ The tests are named `*.spec.exs`, not `*_test.exs`, so that the unit run (`mix t
 
 ## Test Server
 
-Runs on http://localhost:4004. Routes are defined in `server.exs`.
+Runs on http://localhost:4004. Routes are defined in `test_helper.exs`.
 
 ## Notes
 

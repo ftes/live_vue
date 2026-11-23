@@ -27,7 +27,7 @@ config :live_vue,
 
 if config_env() == :e2e do
   config :playwright, :expect, timeout: 1000
-  # The Playwright suite in test/e2e/
+  # The Playwright suite in test/e2e/features/
   config :playwright, :test,
     base_url: "http://localhost:4004/",
     trace: :retain_on_failure,

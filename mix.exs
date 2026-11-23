@@ -9,7 +9,7 @@ defmodule LiveVue.MixProject do
       app: :live_vue,
       version: @version,
       consolidate_protocols: Mix.env() != :test,
-      elixir: "~> 1.15",
+      elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       listeners: listeners(Mix.env()),
@@ -91,8 +91,10 @@ defmodule LiveVue.MixProject do
         }
       ],
       test_coverage: [tool: ExCoveralls],
-      test_ignore_filters: [~r"/e2e/"]
-    ] ++ test_options(Mix.env())
+      test_paths: test_paths(Mix.env()),
+      test_load_filters: test_load_filters(Mix.env()),
+      test_ignore_filters: test_ignore_filters(Mix.env())
+    ]
   end
 
   def cli do
@@ -135,13 +137,16 @@ defmodule LiveVue.MixProject do
     ]
   end
 
-  # The e2e tests are named *.spec.exs, not *_test.exs, because the unit run (`mix test`) under
-  # Elixir 1.15, which has no test_load_filters, loads every *_test.exs under test/.
-  # Elixir 1.16+ loads only the test_pattern files that match test_load_filters.
-  defp test_options(:e2e),
-    do: [test_paths: ["test/e2e"], test_pattern: "*.spec.exs", test_load_filters: [~r"\.spec\.exs$"]]
+  # The e2e tests (test/e2e/features/*/*_test.exs) run in the e2e env only, which has playwright_ex.
+  defp test_paths(:e2e), do: ["test/e2e"]
+  defp test_paths(_), do: ["test"]
 
-  defp test_options(_), do: [test_paths: ["test"]]
+  defp test_load_filters(:e2e), do: [~r"^test/e2e/features/.+_test\.exs$"]
+  defp test_load_filters(_), do: [&(String.ends_with?(&1, "_test.exs") and not String.starts_with?(&1, "test/e2e/"))]
+
+  # utils.ex and case.ex. mix test skips the features' .ex files itself: the e2e env compiles them.
+  defp test_ignore_filters(:e2e), do: [~r"^test/e2e/[^/]+\.ex$"]
+  defp test_ignore_filters(_), do: [~r"/e2e/"]
 
   defp elixirc_paths(:e2e), do: ["lib", "test/e2e/features"]
   defp elixirc_paths(_), do: ["lib"]

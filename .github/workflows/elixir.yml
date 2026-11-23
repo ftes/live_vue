@@ -19,10 +19,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - elixir: "1.15"
-            otp: "25"
-          - elixir: "1.17"
-            otp: "27"
           - elixir: "1.18"
             otp: "28"
           - elixir: "1.19"
@@ -58,5 +54,5 @@ jobs:
       - name: Run tests
         run: mix test
       - name: Run tests and coverage
-        if: matrix.elixir == '1.17' && matrix.otp == '27'
+        if: matrix.elixir == '1.18' && matrix.otp == '28'
         run: mix coveralls.github

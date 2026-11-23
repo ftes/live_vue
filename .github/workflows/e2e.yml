@@ -45,15 +45,6 @@ jobs:
       - name: Install npm dependencies (root)
         run: npm install
 
-      # mix.lock pins the playwright_ex driver and so the browser revisions
-      - name: Restore Playwright driver and browser cache
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.cache/playwright
-            ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/mix.lock') }}
-
       - name: Install E2E dependencies and browsers
         run: mix playwright.install chromium --with-deps
 
