@@ -1,8 +1,7 @@
 # LiveVue End-to-End Tests
 
-This directory contains the Phoenix server and the features for the end-to-end tests of the LiveVue
-library. The tests themselves are ExUnit tests in `e2e_pw/`, run with
-[playwright_ex](https://hex.pm/packages/playwright_ex) (needs Elixir 1.18+).
+This directory contains end-to-end tests for the LiveVue library using
+[playwright_ex](https://hex.pm/packages/playwright_ex) (ExUnit, needs Elixir 1.18+).
 
 ## Setup
 
@@ -14,8 +13,8 @@ library. The tests themselves are ExUnit tests in `e2e_pw/`, run with
 ## Running Tests
 
 ```bash
-mix e2e.test                                 # Build the assets, run all tests
-MIX_ENV=e2e mix test e2e_pw/form_test.exs    # Run one file (after npm run e2e:build)
+mix e2e.test                                                  # Build the assets, run all tests
+MIX_ENV=e2e mix test test/e2e/features/form/form.spec.exs     # Run one file (after npm run e2e:build)
 ```
 
 To watch the browser, set `launch_options: [headless: false]` in the `:playwright, :test` config of
@@ -31,6 +30,7 @@ test/e2e/
 │   ├── basic/              # Basic counter test
 │   │   ├── live.ex         # LiveView module (LiveVue.E2E.TestLive)
 │   │   ├── counter.vue     # Vue component
+│   │   └── basic.spec.exs  # Playwright test
 │   ├── form/               # Form validation tests
 │   ├── stream/             # LiveView streams tests
 │   ├── event/              # useLiveEvent tests
@@ -41,12 +41,14 @@ test/e2e/
 │   └── upload/             # File upload tests
 ├── js/
 │   └── app.js              # Vue/LiveSocket bootstrap
+├── support/                # LiveVue.E2E.Case and the test utilities
 ├── server.exs              # Phoenix endpoint, routes, layout
-├── test_helper.exs         # Runs the server standalone (npm run e2e:server)
+├── run_server.exs          # Runs the server standalone (npm run e2e:server)
+├── test_helper.exs         # Starts the server for the tests
 └── vite.config.js
 ```
 
-The tests are in `e2e_pw/`, one `*_test.exs` per feature.
+The tests are named `*.spec.exs`, not `*_test.exs`, so that the unit run (`mix test`) doesn't load them.
 
 ## Adding a New Test Feature
 
@@ -84,7 +86,7 @@ The tests are in `e2e_pw/`, one `*_test.exs` per feature.
    live "/my-feature", MyFeatureLive
    ```
 
-5. Add test (`e2e_pw/my_feature_test.exs`):
+5. Add test (`my-feature.spec.exs`):
    ```elixir
    defmodule LiveVue.E2E.MyFeatureTest do
      use LiveVue.E2E.Case, async: true

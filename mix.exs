@@ -91,9 +91,8 @@ defmodule LiveVue.MixProject do
         }
       ],
       test_coverage: [tool: ExCoveralls],
-      test_paths: test_paths(Mix.env()),
-      test_ignore_filters: [~r"/e2e/", ~r"e2e_pw/support/"]
-    ]
+      test_ignore_filters: [~r"/e2e/"]
+    ] ++ test_options(Mix.env())
   end
 
   def cli do
@@ -136,10 +135,13 @@ defmodule LiveVue.MixProject do
     ]
   end
 
-  # The browser suite lives outside test/ so that `mix test` under Elixir 1.15, which has no
-  # test_load_filters, does not load it.
-  defp test_paths(:e2e), do: ["e2e_pw"]
-  defp test_paths(_), do: ["test"]
+  # The e2e tests are named *.spec.exs, not *_test.exs, because the unit run (`mix test`) under
+  # Elixir 1.15, which has no test_load_filters, loads every *_test.exs under test/.
+  # Elixir 1.16+ loads only the test_pattern files that match test_load_filters.
+  defp test_options(:e2e),
+    do: [test_paths: ["test/e2e"], test_pattern: "*.spec.exs", test_load_filters: [~r"\.spec\.exs$"]]
+
+  defp test_options(_), do: [test_paths: ["test"]]
 
   defp elixirc_paths(:e2e), do: ["lib", "test/e2e/features"]
   defp elixirc_paths(_), do: ["lib"]

@@ -8,7 +8,7 @@ Vue.js + Phoenix LiveView integration library. Version 1.0.0.
 # Tests
 mix test                          # Elixir tests
 npm test                          # Vitest (assets/*.test.ts)
-mix e2e.test                      # Playwright E2E (e2e_pw/, server in test/e2e/)
+mix e2e.test                      # Playwright E2E (test/e2e/)
 
 # Setup
 mix setup                         # First-time setup (deps + npm install)
@@ -30,8 +30,7 @@ assets/
 ├── useLiveForm.ts           # Form handling with Ecto changesets
 ├── jsonPatch.ts             # Efficient prop diffing
 └── vitePlugin.js            # Vite plugin for component discovery
-test/e2e/                    # Phoenix server and features for the E2E tests
-e2e_pw/                      # Playwright E2E tests (ExUnit, playwright_ex)
+test/e2e/                    # Playwright E2E tests with Phoenix server
 ```
 
 ## Key Patterns
@@ -68,7 +67,7 @@ test/e2e/features/
 ├── basic/            # Each feature is a directory
 │   ├── live.ex       # LiveView module
 │   ├── counter.vue   # Vue component(s)
-│   └── ...
+│   └── basic.spec.exs # Playwright test
 ├── form/
 ├── stream/
 └── ...
@@ -76,11 +75,10 @@ test/e2e/features/
 
 To add a new E2E test:
 1. Create `test/e2e/features/my-feature/`
-2. Add `live.ex` (LiveView) and `*.vue` (components)
+2. Add `live.ex` (LiveView), `*.vue` (components), `*.spec.exs` (test, `use LiveVue.E2E.Case`)
 3. Add route to `test/e2e/server.exs` router
-4. Add the test to `e2e_pw/` (`use LiveVue.E2E.Case`)
 
-Key utilities in `e2e_pw/support/utils.ex`:
+Key utilities in `test/e2e/support/utils.ex`:
 - `sync_lv(page)` - Wait for LiveView connection
 - `eval_lv(page, code)` - Execute Elixir in LiveView process
 

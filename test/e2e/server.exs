@@ -1,5 +1,5 @@
-# The e2e app: endpoint, router, layout. Started by e2e_pw/test_helper.exs (`mix e2e.test`)
-# and test/e2e/test_helper.exs (`npm run e2e:server`).
+# The e2e app: endpoint, router, layout. Started by test_helper.exs (`mix e2e.test`) and
+# run_server.exs (`npm run e2e:server`).
 # Configure Phoenix JSON encoder
 Application.put_env(:phoenix, :json_library, Jason)
 
