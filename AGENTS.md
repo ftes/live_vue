@@ -67,7 +67,7 @@ test/e2e/features/
 ├── basic/            # Each feature is a directory
 │   ├── live.ex       # LiveView module
 │   ├── counter.vue   # Vue component(s)
-│   └── basic_test.exs # Playwright test
+│   └── basic.spec.exs # Playwright test
 ├── form/
 ├── stream/
 └── ...
@@ -75,7 +75,7 @@ test/e2e/features/
 
 To add a new E2E test:
 1. Create `test/e2e/features/my-feature/`
-2. Add `live.ex` (LiveView), `*.vue` (components), `*_test.exs` (test, `use LiveVue.E2E.Case`)
+2. Add `live.ex` (LiveView), `*.vue` (components), `*.spec.exs` (test, `use LiveVue.E2E.Case`)
 3. Add route to `test/e2e/test_helper.exs` router
 
 Key utilities in `test/e2e/utils.ex`:

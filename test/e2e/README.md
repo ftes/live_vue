@@ -14,7 +14,7 @@ This directory contains end-to-end tests for the LiveVue library using
 
 ```bash
 mix e2e.test                                                  # Build the assets, run all tests
-MIX_ENV=e2e mix test test/e2e/features/form/form_test.exs     # Run one file (after npm run e2e:build)
+MIX_ENV=e2e mix test test/e2e/features/form/form.spec.exs     # Run one file (after npm run e2e:build)
 ```
 
 To watch the browser, set `headless: false` in the `:playwright, :test` config of
@@ -30,7 +30,7 @@ test/e2e/
 │   ├── basic/              # Basic counter test
 │   │   ├── live.ex         # LiveView module (LiveVue.E2E.TestLive)
 │   │   ├── counter.vue     # Vue component
-│   │   └── basic_test.exs  # Playwright test
+│   │   └── basic.spec.exs  # Playwright test
 │   ├── form/               # Form validation tests
 │   ├── stream/             # LiveView streams tests
 │   ├── event/              # useLiveEvent tests
@@ -83,7 +83,7 @@ test/e2e/
    live "/my-feature", MyFeatureLive
    ```
 
-5. Add test (`my_feature_test.exs`):
+5. Add test (`my-feature.spec.exs`):
    ```elixir
    defmodule LiveVue.E2E.MyFeatureTest do
      use LiveVue.E2E.Case, async: true
