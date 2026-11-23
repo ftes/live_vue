@@ -1,3 +1,11 @@
+# The e2e server: endpoint, routes, layout. It is the ExUnit helper of the e2e tests (`mix e2e.test`)
+# and runs standalone with `npm run e2e:server`. Only `mix test`, which runs the tests itself, sets
+# ExUnit's autorun to false before requiring it.
+test_run? = Application.get_env(:ex_unit, :autorun) == false
+
+# Keep the server's request logs out of the test output (the e2e env has no logger config).
+if test_run?, do: Logger.configure(level: :warning)
+
 # Configure Phoenix JSON encoder
 Application.put_env(:phoenix, :json_library, Jason)
 
@@ -209,15 +217,22 @@ end
     strategy: :one_for_one
   )
 
-IO.puts("Starting e2e server on port #{LiveVue.E2E.Endpoint.config(:http)[:port]}")
+if test_run? do
+  Code.require_file("utils.ex", __DIR__)
+  Code.require_file("case.ex", __DIR__)
 
-if not IEx.started?() do
-  spawn(fn ->
-    IO.read(:stdio, :line)
-    send(:e2e_helper, :halt)
-  end)
+  ExUnit.start(timeout: 30_000)
+else
+  IO.puts("Starting e2e server on port #{LiveVue.E2E.Endpoint.config(:http)[:port]}")
 
-  receive do
-    :halt -> :ok
+  if not IEx.started?() do
+    spawn(fn ->
+      IO.read(:stdio, :line)
+      send(:e2e_helper, :halt)
+    end)
+
+    receive do
+      :halt -> :ok
+    end
   end
 end

@@ -24,3 +24,12 @@ config :live_vue,
   # if false, we will always update full props and not send diffs
   # defaults to true as it greatly reduces payload size
   enable_props_diff: true
+
+if config_env() == :e2e do
+  # The Playwright suite in test/e2e/features/
+  config :playwright, :test,
+    base_url: "http://localhost:4004/",
+    trace: :retain_on_failure,
+    screenshot: :only_on_failure,
+    expect: [timeout: 1000]
+end

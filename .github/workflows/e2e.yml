@@ -20,8 +20,9 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: "1.15"
-          otp-version: "26"
+          # playwright_ex needs Elixir ~> 1.18
+          elixir-version: "1.19"
+          otp-version: "28"
 
       - name: Restore Elixir dependency cache
         uses: actions/cache@v6
@@ -45,7 +46,16 @@ jobs:
         run: npm install
 
       - name: Install E2E dependencies and browsers
-        run: npm run e2e:install
+        run: mix playwright.install chromium --with-deps
 
+      # Up to two retries of the failed tests, as the `retries: 2` of Playwright Test
       - name: Run E2E tests
-        run: npm run e2e:test
+        run: |
+          npm run e2e:build
+          mix test || { [ $? -eq 2 ] && mix test --failed; } || { [ $? -eq 2 ] && mix test --failed; }
+
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: test-results
+          path: test-results
